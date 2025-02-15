@@ -35,6 +35,8 @@ import MedicationReminders from './components/MedicationReminders';
 import PrescriptionManager from './components/PrescriptionManager';
 import Header from "./components/Header";
 
+
+
 // Language translations
 const translations = {
   en: {
@@ -101,6 +103,7 @@ function App() {
   const [showCamera, setShowCamera] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [showXray, setShowXray] = useState(false);
 
   const t = translations[language];
 
@@ -430,6 +433,10 @@ function App() {
       icon: Bell,
       content: <MedicationReminders language={language} />
     }
+    
+      
+
+    
   ];
 
   if (showOnboarding) {
@@ -480,6 +487,21 @@ function App() {
             );
           })}
         </div>
+        {/* <div>
+    <h1>Welcome to Telemedicine</h1>
+    <div className="services-container">
+      {services.map((service) => (
+        <button key={service.id} onClick={() => setSelectedService(service.id)}>
+          {service.title}
+        </button>
+      ))}
+    </div>
+    {selectedService && (
+      <div className="service-content">
+        {services.find(service => service.id === selectedService)?.content}
+      </div>
+    )}
+  </div> */}
 
         {/* Selected Service Content */}
         {selectedService && (
