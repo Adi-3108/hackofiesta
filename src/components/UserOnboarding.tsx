@@ -76,6 +76,56 @@ const UserOnboarding: React.FC<UserOnboardingProps> = ({ onSubmit, language, set
     recognition.interimResults = false;
 
     recognition.onresult = (event: any) => {
+      const wordToNumber = (word: string): string => {
+        const numberMap: Record<string, string> = {
+          "zero": "0", "one": "1", "two": "2", "three": "3", "four": "4",
+          "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9",
+          "ten": "10", "eleven": "11", "twelve": "12", "thirteen": "13",
+          "fourteen": "14", "fifteen": "15", "sixteen": "16", "seventeen": "17",
+          "eighteen": "18", "nineteen": "19", "twenty": "20", "thirty": "30",
+          "forty": "40", "fifty": "50", "sixty": "60", "seventy": "70",
+          "eighty": "80", "ninety": "90"
+        };
+      
+        return numberMap[word.toLowerCase()] || word;
+      };
+      
+      const startSpeechRecognition = (field: keyof typeof formData) => {
+        if (!('webkitSpeechRecognition' in window)) {
+          alert('Speech recognition is not supported in this browser.');
+          return;
+        }
+      
+        setCurrentField(field);
+        setListening(true);
+      
+        const recognition = new (window as any).webkitSpeechRecognition();
+        recognition.lang = language === 'en' ? 'en-US' : 'hi-IN';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1; // Limit alternatives to avoid confusion
+      
+        recognition.onresult = (event: any) => {
+          let transcript = event.results[0][0].transcript.trim();
+      
+          // Convert spoken words to numbers (for age field)
+          if (field === 'age') {
+            transcript = wordToNumber(transcript);
+          }
+      
+          setFormData(prev => ({
+            ...prev,
+            [field]: transcript
+          }));
+          setListening(false);
+        };
+      
+        recognition.onerror = () => setListening(false);
+        recognition.onend = () => setListening(false);
+      
+        recognition.start();
+      };
+      
       const transcript = event.results[0][0].transcript;
       setFormData(prev => ({
         ...prev,
@@ -95,10 +145,48 @@ const UserOnboarding: React.FC<UserOnboardingProps> = ({ onSubmit, language, set
     recognition.start();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    
+    console.log("📤 Submitting Form Data:", formData);
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/patients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      console.log("📥 Response Status:", response.status);
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server Error: ${response.status} - ${errorText}`);
+      }
+  
+      const data = await response.json();
+      console.log('✅ Success:', data);
+      alert('Patient added successfully!');
+      onSubmit(formData);
+  
+      // Reset form after submission
+      setFormData({
+        name: '',
+        age: '',
+        gender: '',
+        phone: '',
+        address: '',
+      });
+  
+    } catch (error: any) {
+      console.error('❌ Submission Error:', error.message);
+      alert('Failed to submit form: ' + error.message);
+    }
   };
+  
+  
 
   const renderInput = (field: keyof typeof formData, label: string, type: string = 'text') => (
     <div className="mb-4">

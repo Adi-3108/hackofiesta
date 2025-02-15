@@ -21,7 +21,7 @@ import {
   AlertCircle,
   BookOpen,
   Bell,
-  History  // <-- Add this import
+  History  
 } from 'lucide-react';
 
 import UserOnboarding from './components/UserOnboarding';
@@ -33,6 +33,7 @@ import MedicalHistory from './components/MedicalHistory';
 import MedicalReports from './components/MedicalReports';
 import MedicationReminders from './components/MedicationReminders';
 import PrescriptionManager from './components/PrescriptionManager';
+import Header from "./components/Header";
 
 // Language translations
 const translations = {
@@ -183,7 +184,7 @@ function App() {
       nextSlot: new Date(),
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=60",
       languages: ["English", "Hindi"],
-      consultationFee: "₹800"
+     
     },
     {
       id: 2,
@@ -197,7 +198,7 @@ function App() {
       nextSlot: new Date(Date.now() + 20 * 60000), // 20 minutes from now
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=60",
       languages: ["English", "Gujarati", "Hindi"],
-      consultationFee: "₹600"
+      // consultationFee: "₹600"
     },
     {
       id: 3,
@@ -211,7 +212,7 @@ function App() {
       nextSlot: new Date(Date.now() + 11 * 60 * 60000), // 11 hours from now
       image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&auto=format&fit=crop&q=60",
       languages: ["English", "Punjabi", "Hindi"],
-      consultationFee: "₹700"
+      // consultationFee: "₹700"
     },
     {
       id: 4,
@@ -225,11 +226,11 @@ function App() {
       nextSlot: new Date(),
       image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&auto=format&fit=crop&q=60",
       languages: ["English", "Hindi", "Bengali"],
-      consultationFee: "₹500"
+      // consultationFee: "₹500"
     }
   ];
 
-  // Rest of your existing services array with the updated consultation service
+  // Rest of the existing services array with the updated consultation service
   const services = [
     { 
       id: 'consultation', 
@@ -298,8 +299,8 @@ function App() {
                           <span className="text-gray-900">{doctor.languages.join(", ")}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Consultation Fee:</span>
-                          <span className="text-gray-900">{doctor.consultationFee}</span>
+                          {/* <span className="text-gray-600">Consultation Fee:</span> */}
+                          {/* <span className="text-gray-900">{doctor.consultationFee}</span> */}
                         </div>
                         <div className="flex justify-between items-center">
                           {doctor.available ? (
@@ -438,43 +439,12 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <Stethoscope className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">Rural Health Connect</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <User className="h-5 w-5 text-gray-600" />
-              <span className="text-sm text-gray-600">{userData?.name}</span>
-            </div>
-            <select 
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as 'en' | 'hi')}
-              className="bg-white border border-gray-300 rounded-lg px-3 py-1 text-sm"
-            >
-              <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-            </select>
-            <div className="flex items-center text-sm text-gray-600">
-              <Calendar className="h-5 w-5 mr-1" />
-              <span>{currentTime.toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <Clock className="h-5 w-5 mr-1" />
-              <span>{currentTime.toLocaleTimeString()}</span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
-            >
-              <LogOut className="h-5 w-5" />
-              <span>{t.logout}</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header
+  userData={userData}
+  handleLogout={handleLogout}
+  language={language}
+  setLanguage={setLanguage}
+/>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Welcome Section */}
@@ -520,14 +490,27 @@ function App() {
 
         {/* Emergency Section */}
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 mt-8">
-          <h3 className="text-xl font-semibold text-red-700 mb-2">{t.emergency}</h3>
-          <p className="text-red-600 mb-4">
-            {t.emergencyText}
-          </p>
-          <div className="text-2xl font-bold text-red-700">
-            Emergency: 108
-          </div>
-        </div>
+  <h3 className="text-xl font-semibold text-red-700 mb-2">{t.emergency}</h3>
+  <p className="text-red-600 mb-4">
+    {t.emergencyText}
+  </p>
+  <div className="text-2xl font-bold text-red-700">
+    Emergency: 108
+  </div>
+  <div className="mt-4 text-red-700">
+    <p className="font-medium">Need help? Call a **Community Health Worker**:</p>
+    <a href="tel:+919876543210" className="text-red-600 font-bold text-lg">
+      +91 98765 43210
+    </a>
+    <p className="mt-2 font-medium">
+      सहायता चाहिए? हमारे <span className="font-bold">समुदाय स्वास्थ्य कार्यकर्ता</span> से संपर्क करें:
+    </p>
+    <a href="tel:+919876543210" className="text-red-600 font-bold text-lg">
+      +91 98765 43210
+    </a>
+  </div>
+</div>
+
       </main>
 
       {/* Footer */}

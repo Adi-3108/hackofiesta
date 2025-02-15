@@ -109,7 +109,7 @@ const AppointmentSystem: React.FC<AppointmentSystemProps> = ({ language }) => {
               </div>
             </div>
 
-            {/* Add more appointment cards here */}
+            
           </div>
         </div>
       </div>
